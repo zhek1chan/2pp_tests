@@ -1,7 +1,7 @@
 package com.example.a2pp_tests
 
 data class Filters(
-    val time: Int,
+    val time: Long,
     val age: Int,
     val gender: String,
     val osVersion: Int,
