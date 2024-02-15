@@ -1,132 +1,167 @@
 package com.example.a2pp_tests
 
+import kotlin.math.pow
+import kotlin.math.sqrt
+
 
 fun main() {
+
     var inputFiltersMap = mutableMapOf<String, Any>()
-    print("Введите ключ и значение через пробел: ")
-    for (i in 0..5) {
+    var array = mutableListOf<String>()
+
+    for (i in 0 until 6) {
         val inputString = readLine()
-        inputFiltersMap = inputMap(inputString!!)
-        println(inputFiltersMap)
+        array.add(inputString!!)
     }
-    var age = 0
-    var osVersion = 0
-    var time = 0L
-    var xCoord= 0f
-    var yCoord= 0f
-    var gender = ""
+    inputFiltersMap = inputMapFromArray(array!!)
+    val filter: Filters = divideValues(inputFiltersMap)
 
-    //надо вынести в отдельную функцию
-    inputFiltersMap.forEach { entry ->
-        if (entry.key == "time") {
-            time = entry.value as Long
-        } else if (entry.key == "age") {
-            age = entry.value as Int
-        } else if (entry.key == "gender") {
-            gender = entry.value as String
-        } else if (entry.key == "os_version") {
-            osVersion = entry.value as Int
-        } else if (entry.key == "x_coord") {
-            xCoord = entry.value as Float
-        } else if (entry.key == "y_coord") {
-            yCoord = entry.value as Float
-        }
-    }
-
-    val pushNum =  readLine()!!.toInt()
-    /////////////////////////////////////
+    val pushsNum = readLine()!!.toInt()
     var i = 0
-    while(i < pushNum){
-        var n = 0
-        val pushParamsNum =  readLine()!!.toInt()
-        while(n < pushParamsNum){
-            //Тут вся фильрация
-            var type = ""
-            var text = ""
+    var answers = mutableListOf<String>()
+    for (j in 1..pushsNum) {
+        val pushParamsNum = readLine()!!.toInt()
+        var inputDataMap = mutableMapOf<String, Any>()
+        var type = ""
+        var text = ""
+        var arr = mutableListOf<String>()
 
+        for (n in 1..pushParamsNum) {
             val inputString = readLine()
-            val inputDataPushMap = inputMap(inputString!!)
-
-            inputDataPushMap.forEach { entry ->
-                if (entry.key == "text") {
-                    text = entry.value as String
-                } else {
-                    type = entry.value as String
+            if ((n == 1) || (n == 2)) {
+                val inputDataPushMap = inputMap(inputString!!)
+                inputDataPushMap.forEach { entry ->
+                    if (entry.key == "text") {
+                        text = entry.value.toString()
+                    } else {
+                        type = entry.value.toString()
+                    }
                 }
+            } else {
+                arr.add(inputString!!)
             }
-            //сравниваем тип
-            if (type == "LocationPush"){
-
-            } else if (type == "LocationAgePush"){
-
-            } else if (type == "GenderPush"){
-
-            } else if (type == "GenderAgePush"){
-
-            } else if (type == "AgeSpecificPush"){
-
-            } else{
-                //TechPush
-            }
-            //дальше сравниваем с фильтром и выводим результат
-            n=+1
         }
-        i=+1
+
+        inputDataMap = inputMapFromArray(arr)
+        var paramsOfPush = divideValues(inputDataMap)
+
+        //сравниваем тип
+        if (type == "LocationPush") {
+            if (euclideanDistanceAndRadiusCheck(
+                    paramsOfPush.xCoord!!,
+                    paramsOfPush.yCoord!!,
+                    filter.xCoord!!,
+                    filter.yCoord!!,
+                    paramsOfPush.radius!!
+                ) && (paramsOfPush.time!! >= filter.time!!)
+            ) {
+                println(text)
+                answers.add(text)
+            }
+        } else if (type == "LocationAgePush") {
+            if ((paramsOfPush.age!! < filter.age!!) && (euclideanDistanceAndRadiusCheck(
+                    paramsOfPush.xCoord!!,
+                    paramsOfPush.yCoord!!,
+                    filter.xCoord!!,
+                    filter.yCoord!!,
+                    paramsOfPush.radius!!
+                ))
+            ) {
+                answers.add(text)
+                println(text)
+            }
+        } else if (type == "GenderPush") {
+            if (paramsOfPush.gender!! == filter.gender!!) {
+                answers.add(text)
+                println(text)
+            }
+        } else if (type == "GenderAgePush") {
+            if ((paramsOfPush.gender!! == filter.gender!!) && (paramsOfPush.age!! <= filter.age!!)) {
+                answers.add(text)
+                println(text)
+            }
+        } else if (type == "AgeSpecificPush") {
+            if ((paramsOfPush.age!! <= filter.age!!) && (paramsOfPush.time!! >= filter.time!!)) {
+                answers.add(text)
+                println(text)
+            }
+        } else if (type == "TechPush") {
+            if (paramsOfPush.osVersion!! >= filter.osVersion!!) {
+                answers.add(text)
+                println(text)
+            }
+        }
+
     }
-    ///////////////////////////////////////
-    val filter = Filters(
-        time,
-        age,
-        gender,
-        osVersion,
-        xCoord,
-        yCoord
-    )
+    if (answers.size == 0) {
+        println("-1")
+    }
 }
 
 fun inputMap(s: String): MutableMap<String, Any> {
     var inputMap = mutableMapOf<String, Any>()
     s.let {
         val (key, value) = it.split(" ")
-        println("Ключ: $key, Значение: $value")
         inputMap.put(key, value)
     }
     return inputMap
 }
-/*lateinit var gender: String
-var age: Int = 0
-var osVersion: Int = 0
-var time: Long = 0
-var xCoord: Int = 0
-var yCoord: Int = 0
-var l: Int = 0
-var count: Int = 0
-var arr: ArrayList<String> = arrayListOf("", "", "", "", "", "")
-while (count < 6) {
-    var first = readLine()
-    arr.add(count, first.toString())
-    l = first!!.length
-    if (first.toString().contains("time")) {
-        first.toString().drop(5)
-        time = (first.toString().toLong())
-    } else if (first.toString().contains("gender")) {
-        first.toString().drop(7)
-        gender = (first.toString())
-    } else if (first.toString().contains("age")) {
-        first.toString().drop(4)
-        age = (first.toString().toInt())
-    } else if (first.toString().contains("os_version")) {
-        first.toString().drop(11)
-        osVersion = (first.toString().toInt())
-    } else if (first.toString().contains("x_coord")) {
-        first.toString().drop(8)
-        xCoord=(first.toString().toInt())
-    } else if(first.toString().contains("y_coord")){
-        first.toString().drop(8)
-        yCoord=(first.toString().toInt())
+
+fun inputMapFromArray(array: MutableList<String>): MutableMap<String, Any> {
+    var inputMap = mutableMapOf<String, Any>()
+    array.forEach {
+        val s = it
+        s.let {
+            val (key, value) = it.split(" ")
+            inputMap.put(key, value)
+        }
     }
-    count=+1
+    return inputMap
 }
-println("$xCoord $yCoord $gender $age $time $osVersion")
-}*/
+
+fun divideValues(inputFiltersMap: MutableMap<String, Any>): Filters {
+    var age: Int? = 0
+    var osVersion: Int? = 0
+    var time: Long? = 0
+    var xCoord: Float? = 0f
+    var yCoord: Float? = 0f
+    var gender: String? = ""
+    var radius: Int? = 0
+    inputFiltersMap.forEach { entry ->
+        if (entry.key == "time") {
+            time = entry.value.toString().toLong()
+        } else if (entry.key == "age") {
+            age = entry.value.toString().toInt()
+        } else if (entry.key == "gender") {
+           gender = entry.value.toString()
+        } else if (entry.key == "os_version") {
+            osVersion = entry.value.toString().toInt()
+        } else if (entry.key == "x_coord") {
+            xCoord = entry.value.toString().toFloat()
+        } else if (entry.key == "y_coord") {
+            yCoord = entry.value.toString().toFloat()
+        } else if (entry.key == "radius") {
+            radius = entry.value.toString().toInt()
+        }
+    }
+    val values = Filters(time, age, gender, osVersion, xCoord, yCoord, radius)
+    return values
+}
+
+
+fun euclideanDistanceAndRadiusCheck(
+    x1: Float,
+    y1: Float,
+    x2: Float,
+    y2: Float,
+    radius: Int
+): Boolean {
+    val distance = sqrt((x2 - x1).pow(2) + (y2 - y1).pow(2))
+    if (distance > radius) {
+        return false
+    } else {
+        return true
+    }
+}
+
 

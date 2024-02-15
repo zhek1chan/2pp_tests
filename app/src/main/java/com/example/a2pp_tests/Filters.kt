@@ -1,11 +1,12 @@
 package com.example.a2pp_tests
 
 data class Filters(
-    val time: Long,
-    val age: Int,
-    val gender: String,
-    val osVersion: Int,
-    val xCoord: Float,
-    val yCoord: Float
+    var time: Long?,
+    var age: Int?,
+    var gender: String?,
+    var osVersion: Int?,
+    var xCoord: Float?,
+    var yCoord: Float?,
+    var radius: Int?
 ) {
 }
