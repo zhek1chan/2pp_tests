@@ -6,28 +6,27 @@ import kotlin.math.sqrt
 
 fun main() {
 
-    var inputFiltersMap = mutableMapOf<String, Any>()
-    var array = mutableListOf<String>()
+    val inputFiltersMap: MutableMap<String, Any>
+    val array = mutableListOf<String>()
 
     for (i in 0 until 6) {
-        val inputString = readLine()
+        val inputString = readlnOrNull()
         array.add(inputString!!)
     }
-    inputFiltersMap = inputMapFromArray(array!!)
+    inputFiltersMap = inputMapFromArray(array)
     val filter: Filters = divideValues(inputFiltersMap)
 
-    val pushsNum = readLine()!!.toInt()
-    var i = 0
-    var answers = mutableListOf<String>()
+    val pushsNum = readln().toInt()
+    val answers = mutableListOf<String>()
     for (j in 1..pushsNum) {
-        val pushParamsNum = readLine()!!.toInt()
-        var inputDataMap = mutableMapOf<String, Any>()
+        val pushParamsNum = readln().toInt()
+        var inputDataMap: MutableMap<String, Any>
         var type = ""
         var text = ""
-        var arr = mutableListOf<String>()
+        val arr = mutableListOf<String>()
 
         for (n in 1..pushParamsNum) {
-            val inputString = readLine()
+            val inputString = readlnOrNull()
             if ((n == 1) || (n == 2)) {
                 val inputDataPushMap = inputMap(inputString!!)
                 inputDataPushMap.forEach { entry ->
@@ -43,7 +42,7 @@ fun main() {
         }
 
         inputDataMap = inputMapFromArray(arr)
-        var paramsOfPush = divideValues(inputDataMap)
+        val paramsOfPush = divideValues(inputDataMap)
 
         //сравниваем тип
         if (type == "LocationPush") {
@@ -99,7 +98,7 @@ fun main() {
 }
 
 fun inputMap(s: String): MutableMap<String, Any> {
-    var inputMap = mutableMapOf<String, Any>()
+    val inputMap = mutableMapOf<String, Any>()
     s.let {
         val (key, value) = it.split(" ")
         inputMap.put(key, value)
@@ -108,12 +107,11 @@ fun inputMap(s: String): MutableMap<String, Any> {
 }
 
 fun inputMapFromArray(array: MutableList<String>): MutableMap<String, Any> {
-    var inputMap = mutableMapOf<String, Any>()
-    array.forEach {
-        val s = it
-        s.let {
+    val inputMap = mutableMapOf<String, Any>()
+    array.forEach { it ->
+        it.let {
             val (key, value) = it.split(" ")
-            inputMap.put(key, value)
+            inputMap[key] = value
         }
     }
     return inputMap
@@ -128,24 +126,37 @@ fun divideValues(inputFiltersMap: MutableMap<String, Any>): Filters {
     var gender: String? = ""
     var radius: Int? = 0
     inputFiltersMap.forEach { entry ->
-        if (entry.key == "time") {
-            time = entry.value.toString().toLong()
-        } else if (entry.key == "age") {
-            age = entry.value.toString().toInt()
-        } else if (entry.key == "gender") {
-           gender = entry.value.toString()
-        } else if (entry.key == "os_version") {
-            osVersion = entry.value.toString().toInt()
-        } else if (entry.key == "x_coord") {
-            xCoord = entry.value.toString().toFloat()
-        } else if (entry.key == "y_coord") {
-            yCoord = entry.value.toString().toFloat()
-        } else if (entry.key == "radius") {
-            radius = entry.value.toString().toInt()
+        when (entry.key) {
+            "time" -> {
+                time = entry.value.toString().toLong()
+            }
+
+            "age" -> {
+                age = entry.value.toString().toInt()
+            }
+
+            "gender" -> {
+                gender = entry.value.toString()
+            }
+
+            "os_version" -> {
+                osVersion = entry.value.toString().toInt()
+            }
+
+            "x_coord" -> {
+                xCoord = entry.value.toString().toFloat()
+            }
+
+            "y_coord" -> {
+                yCoord = entry.value.toString().toFloat()
+            }
+
+            "radius" -> {
+                radius = entry.value.toString().toInt()
+            }
         }
     }
-    val values = Filters(time, age, gender, osVersion, xCoord, yCoord, radius)
-    return values
+    return Filters(time, age, gender, osVersion, xCoord, yCoord, radius)
 }
 
 
@@ -157,11 +168,16 @@ fun euclideanDistanceAndRadiusCheck(
     radius: Int
 ): Boolean {
     val distance = sqrt((x2 - x1).pow(2) + (y2 - y1).pow(2))
-    if (distance > radius) {
-        return false
-    } else {
-        return true
-    }
+    return distance <= radius
 }
+data class Filters(
+    var time: Long?,
+    var age: Int?,
+    var gender: String?,
+    var osVersion: Int?,
+    var xCoord: Float?,
+    var yCoord: Float?,
+    var radius: Int?
+)
 
 
