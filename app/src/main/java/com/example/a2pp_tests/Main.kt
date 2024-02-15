@@ -52,9 +52,7 @@ fun main() {
                     filter.xCoord!!,
                     filter.yCoord!!,
                     paramsOfPush.radius!!
-                ) && (paramsOfPush.time!! >= filter.time!!)
-            ) {
-                println(text)
+                ) && (paramsOfPush.time!! >= filter.time!!)) {
                 answers.add(text)
             }
         } else if (type == "LocationAgePush") {
@@ -67,33 +65,30 @@ fun main() {
                 ))
             ) {
                 answers.add(text)
-                println(text)
             }
         } else if (type == "GenderPush") {
             if (paramsOfPush.gender!! == filter.gender!!) {
                 answers.add(text)
-                println(text)
             }
         } else if (type == "GenderAgePush") {
             if ((paramsOfPush.gender!! == filter.gender!!) && (paramsOfPush.age!! <= filter.age!!)) {
                 answers.add(text)
-                println(text)
             }
         } else if (type == "AgeSpecificPush") {
             if ((paramsOfPush.age!! <= filter.age!!) && (paramsOfPush.time!! >= filter.time!!)) {
                 answers.add(text)
-                println(text)
             }
         } else if (type == "TechPush") {
             if (paramsOfPush.osVersion!! >= filter.osVersion!!) {
                 answers.add(text)
-                println(text)
             }
         }
 
     }
     if (answers.size == 0) {
         println("-1")
+    } else answers.forEach{
+        println(it)
     }
 }
 
@@ -154,7 +149,7 @@ fun divideValues(inputFiltersMap: MutableMap<String, Any>): Filters {
             "radius" -> {
                 radius = entry.value.toString().toInt()
             }
-            "expire_date" ->{
+            "expiry_date" ->{
                 time = entry.value.toString().toLong()
             }
         }
@@ -182,4 +177,6 @@ data class Filters(
     var yCoord: Float?,
     var radius: Int?
 )
+
+
 
