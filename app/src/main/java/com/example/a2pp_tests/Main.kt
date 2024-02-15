@@ -19,12 +19,14 @@ fun main() {
     var answers: Array<String> = arrayOf()
     for (j in 1..pushsNum) {
         val pushParamsNum = readLine()!!.toInt()
-        println("Nums $pushParamsNum")
+        //println("Nums $pushParamsNum")
         var inputDataMap = mutableMapOf<String, Any>()
         var type = ""
         var text = ""
+        var arr = emptyArray<MutableMap<String, Any>>()
+        var paramsOfPush = divideValues(inputDataMap)
         for (n in 1..pushParamsNum) {
-            println(n)
+            //println(n)
             val inputString = readLine()
             if ((n == 1) || (n == 2)) {
                 val inputDataPushMap = inputMap(inputString!!)
@@ -35,11 +37,14 @@ fun main() {
                         type = entry.value.toString()
                     }
                 }
-            } else {
+            } else{
                 inputDataMap = inputMap(inputString!!)
+                arr.plus(inputDataMap)
             }
         }
-        val paramsOfPush = divideValues(inputDataMap)
+        paramsOfPush = CreatePushsData(arr)
+        println(paramsOfPush)
+
         //сравниваем тип
         if (type == "LocationPush") {
             if (euclideanDistanceAndRadiusCheck(
@@ -117,24 +122,67 @@ fun divideValues(inputFiltersMap: MutableMap<String, Any>): Filters {
     var yCoord: Float? = 0f
     var gender: String? = ""
     var radius: Int? = 0
+    var values = Filters(time, age, gender, osVersion, xCoord, yCoord, radius)
     inputFiltersMap.forEach { entry ->
         if (entry.key == "time") {
-            time = entry.value.toString().toLong()
+            values.time = entry.value.toString().toLong()
         } else if (entry.key == "age") {
-            age = entry.value.toString().toInt()
+            values.age = entry.value.toString().toInt()
         } else if (entry.key == "gender") {
-            gender = entry.value.toString()
+            values.gender = entry.value.toString()
         } else if (entry.key == "os_version") {
-            osVersion = entry.value.toString().toInt()
+            values.osVersion = entry.value.toString().toInt()
         } else if (entry.key == "x_coord") {
-            xCoord = entry.value.toString().toFloat()
+            values.xCoord = entry.value.toString().toFloat()
         } else if (entry.key == "y_coord") {
-            yCoord = entry.value.toString().toFloat()
+            values.yCoord = entry.value.toString().toFloat()
         } else if (entry.key == "radius") {
-            radius = entry.value.toString().toInt()
+            values.radius = entry.value.toString().toInt()
         }
     }
-    val values = Filters(time, age, gender, osVersion, xCoord, yCoord, radius)
+    //println(values)
+    return values
+}
+
+fun CreatePushsData(arr: Array<MutableMap<String, Any>>): Filters {
+    var age: Int? = 0
+    var osVersion: Int? = 0
+    var time: Long? = 0
+    var xCoord: Float? = 0f
+    var yCoord: Float? = 0f
+    var gender: String? = ""
+    var radius: Int? = 0
+    var values = Filters(time, age, gender, osVersion, xCoord, yCoord, radius)
+    arr.forEach {
+        val inputFiltersMap = it
+        inputFiltersMap.forEach { entry ->
+            when (entry.key) {
+                "time" -> {
+                    values.time = entry.value.toString().toLong()
+                }
+                "age" -> {
+                    values.age = entry.value.toString().toInt()
+                }
+                "gender" -> {
+                    values.gender = entry.value.toString()
+                }
+                "os_version" -> {
+                    values.osVersion = entry.value.toString().toInt()
+                }
+                "x_coord" -> {
+                    values.xCoord = entry.value.toString().toFloat()
+                }
+                "y_coord" -> {
+                    values.yCoord = entry.value.toString().toFloat()
+                }
+                "radius" -> {
+                    values.radius = entry.value.toString().toInt()
+                }
+            }
+        }
+        println(values)
+    }
+
     return values
 }
 
@@ -152,4 +200,5 @@ fun euclideanDistanceAndRadiusCheck(
         return true
     }
 }
+
 
