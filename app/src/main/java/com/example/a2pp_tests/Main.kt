@@ -95,7 +95,8 @@ fun main() {
 fun inputMap(s: String): MutableMap<String, Any> {
     val inputMap = mutableMapOf<String, Any>()
     s.let {
-        val (key, value) = it.split(" ")
+        val key = it.substringBefore(" ")
+        val value = it.substringAfter(" ")
         inputMap.put(key, value)
     }
     return inputMap
