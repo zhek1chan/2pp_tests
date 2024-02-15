@@ -56,7 +56,7 @@ fun main() {
                 answers.add(text)
             }
         } else if (type == "LocationAgePush") {
-            if ((paramsOfPush.age!! < filter.age!!) && (euclideanDistanceAndRadiusCheck(
+            if ((paramsOfPush.age!! <= filter.age!!) && (euclideanDistanceAndRadiusCheck(
                     paramsOfPush.xCoord!!,
                     paramsOfPush.yCoord!!,
                     filter.xCoord!!,
