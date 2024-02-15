@@ -154,6 +154,9 @@ fun divideValues(inputFiltersMap: MutableMap<String, Any>): Filters {
             "radius" -> {
                 radius = entry.value.toString().toInt()
             }
+            "expire_date" ->{
+                time = entry.value.toString().toLong()
+            }
         }
     }
     return Filters(time, age, gender, osVersion, xCoord, yCoord, radius)
@@ -179,5 +182,4 @@ data class Filters(
     var yCoord: Float?,
     var radius: Int?
 )
-
 
